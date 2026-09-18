@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Interactive Exercise 17C — adding vectors by the triangle law, plus vector chains around quadrilateral PQRS.">
+<title>Vectors 17C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#f4f7fa;
+    --surface:#ffffff;
+    --surface-2:#eef2f6;
+    --ink:#152130;
+    --muted:#5c6b7a;
+    --grid-line:#d7e2ea;
+    --grid-line-strong:#b9c9d6;
+    --border:#dbe4ec;
+    --p-color:#2566a8;
+    --p-color-soft:#dbe9f7;
+    --q-color:#d9702f;
+    --q-color-soft:#faeadd;
+    --r-color:#1f9d73;
+    --r-color-soft:#dcf3e9;
+    --accent:#6a4fe0;
+    --accent-ink:#ffffff;
+    --success:#1f9d73;
+    --danger:#cf4a4a;
+    --shadow:0 1px 2px rgba(21,33,48,.06), 0 8px 24px -12px rgba(21,33,48,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10151c;
+      --surface:#171f28;
+      --surface-2:#1d2731;
+      --ink:#e8eef3;
+      --muted:#93a4b3;
+      --grid-line:#28333e;
+      --grid-line-strong:#37454f;
+      --border:#2b3743;
+      --p-color:#6fb4ea;
+      --p-color-soft:#1c3247;
+      --q-color:#f0a066;
+      --q-color-soft:#3a2a1c;
+      --r-color:#5fd6a6;
+      --r-color-soft:#153529;
+      --accent:#a78bfa;
+      --accent-ink:#171326;
+      --success:#5fd6a6;
+      --danger:#f28b8b;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10151c;
+    --surface:#171f28;
+    --surface-2:#1d2731;
+    --ink:#e8eef3;
+    --muted:#93a4b3;
+    --grid-line:#28333e;
+    --grid-line-strong:#37454f;
+    --border:#2b3743;
+    --p-color:#6fb4ea;
+    --p-color-soft:#1c3247;
+    --q-color:#f0a066;
+    --q-color-soft:#3a2a1c;
+    --r-color:#5fd6a6;
+    --r-color-soft:#153529;
+    --accent:#a78bfa;
+    --accent-ink:#171326;
+    --success:#5fd6a6;
+    --danger:#f28b8b;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    padding:28px 16px 60px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  header.page{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    align-items:flex-end;
+    justify-content:space-between;
+    margin-bottom:28px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:12.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:"Sora", sans-serif;
+    font-weight:800;
+    font-size:clamp(26px,4vw,36px);
+    margin:0;
+    text-wrap:balance;
+    letter-spacing:-.01em;
+  }
+  h1 .accent{color:var(--accent);}
+  .page-sub{
+    margin:8px 0 0;
+    color:var(--muted);
+    font-size:14.5px;
+    max-width:56ch;
+  }
+  .progress-badge{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:8px 16px 8px 8px;
+    box-shadow:var(--shadow);
+    font-family:"IBM Plex Mono", monospace;
+    white-space:nowrap;
+  }
+  .progress-ring{
+    width:34px;height:34px;
+    flex:none;
+  }
+  .progress-ring circle{fill:none;stroke-width:4;}
+  .progress-ring .track{stroke:var(--surface-2);}
+  .progress-ring .fill{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .4s ease;}
+  #progressText{font-size:13.5px;font-weight:600;color:var(--ink);}
+  #progressText span{color:var(--muted);font-weight:500;}
+
+  section.block{margin-bottom:44px;}
+  .block-head{margin-bottom:16px;}
+  .block-kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 12%, transparent);
+    padding:4px 10px;
+    border-radius:6px;
+    margin-bottom:10px;
+  }
+  h2{
+    font-family:"Sora", sans-serif;
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 8px;
+  }
+  .source-line{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:13.5px;
+    color:var(--ink);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-left:3px solid var(--accent);
+    padding:10px 14px;
+    border-radius:0 8px 8px 0;
+    margin:0 0 10px;
+  }
+  .hint{
+    font-size:13.5px;
+    color:var(--muted);
+    margin:0;
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .hint svg{flex:none;margin-top:2px;}
+
+  .legend{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    margin:14px 0 18px;
+    font-size:13px;
+    font-family:"IBM Plex Mono", monospace;
+  }
+  .legend-item{display:flex;align-items:center;gap:7px;}
+  .swatch{width:20px;height:4px;border-radius:2px;}
+
+  .grid-panels{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+    gap:18px;
+  }
+
+  .panel-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 14px 16px;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .panel-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .panel-letter{
+    font-family:"Sora", sans-serif;
+    font-weight:800;
+    font-size:15px;
+    width:28px;height:28px;
+    border-radius:8px;
+    background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+  }
+  .status-pill{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:11.5px;
+    letter-spacing:.03em;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--surface-2);
+    color:var(--muted);
+    display:flex;align-items:center;gap:6px;
+    transition:background .2s, color .2s;
+  }
+  .status-pill.solved{
+    background:var(--r-color-soft);
+    color:var(--r-color);
+  }
+  .status-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+  .svg-holder{
+    background:
+      linear-gradient(var(--surface-2), var(--surface-2));
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    touch-action:none;
+  }
+  .svg-holder svg{display:block;width:100%;height:auto;}
+
+  .drag-hit{cursor:grab;}
+  .drag-hit:active{cursor:grabbing;}
+  .drag-vec.dragging{filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));}
+
+  .vec-label{
+    font-family:"IBM Plex Mono", monospace;
+    font-weight:600;
+  }
+
+  .panel-actions{
+    display:flex;
+    gap:8px;
+  }
+  button{
+    font-family:"IBM Plex Sans", sans-serif;
+    font-size:13px;
+    font-weight:600;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--ink);
+    padding:7px 12px;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s;
+  }
+  button:hover{background:var(--surface-2);}
+  button:active{transform:scale(.96);}
+  button.primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--accent-ink);
+  }
+  button.primary:hover{filter:brightness(1.06);}
+  button:focus-visible, input:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+
+  /* Part 2 */
+  .part2-layout{
+    display:grid;
+    grid-template-columns:minmax(220px,320px) 1fr;
+    gap:24px;
+    align-items:start;
+  }
+  @media (max-width:680px){
+    .part2-layout{grid-template-columns:1fr;}
+  }
+  .quad-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px;
+    box-shadow:var(--shadow);
+  }
+  .questions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .qrow{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 16px;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:12px 16px;
+  }
+  .qrow-label{
+    font-family:"Sora", sans-serif;
+    font-weight:800;
+    font-size:14px;
+    color:var(--muted);
+    width:18px;
+  }
+  .qrow-expr{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    flex:1 1 240px;
+    min-width:0;
+    flex-wrap:wrap;
+  }
+  .vec{
+    position:relative;
+    display:inline-block;
+    padding-top:.85em;
+    font-weight:600;
+  }
+  .vec::before{
+    content:"";
+    position:absolute;
+    top:.15em;
+    left:8%;
+    right:8%;
+    height:1.4px;
+    background:currentColor;
+  }
+  .vec::after{
+    content:"";
+    position:absolute;
+    top:-.05em;
+    right:6%;
+    border:4px solid transparent;
+    border-left-color:currentColor;
+    border-right:0;
+  }
+  .op{color:var(--muted);font-weight:600;padding:0 2px;}
+  .eq{color:var(--muted);font-weight:600;}
+
+  .answer-form{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:0 0 auto;
+  }
+  .answer-form input{
+    width:84px;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:15px;
+    font-weight:600;
+    text-align:center;
+    text-transform:uppercase;
+    padding:8px 6px;
+    border-radius:8px;
+    border:1.5px solid var(--border);
+    background:var(--surface);
+    color:var(--ink);
+  }
+  .answer-form input::placeholder{
+    text-transform:none;
+    color:var(--muted);
+    opacity:.8;
+  }
+  .answer-form input.correct{
+    border-color:var(--success);
+    background:var(--r-color-soft);
+    color:var(--success);
+  }
+  .answer-form input.wrong{
+    border-color:var(--danger);
+    animation:shake .32s ease;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-4px);}
+    75%{transform:translateX(4px);}
+  }
+  .feedback-icon{
+    width:20px;
+    font-size:15px;
+    text-align:center;
+  }
+
+  footer.page{
+    margin-top:40px;
+    padding-top:16px;
+    border-top:1px solid var(--border);
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  footer.page code{
+    font-family:"IBM Plex Mono", monospace;
+    background:var(--surface-2);
+    padding:1px 5px;
+    border-radius:4px;
+  }
+
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page">
+    <div>
+      <p class="eyebrow">Interactive Exercise · Vectors</p>
+      <h1>Exercise <span class="accent">17C</span></h1>
+      <p class="page-sub">Adding vectors by the triangle law — drag, construct, and check each answer.</p>
+    </div>
+    <div class="progress-badge">
+      <svg class="progress-ring" viewBox="0 0 40 40">
+        <circle class="track" cx="20" cy="20" r="16"></circle>
+        <circle id="progressFill" class="fill" cx="20" cy="20" r="16"
+          stroke-dasharray="100.53" stroke-dashoffset="100.53"
+          transform="rotate(-90 20 20)"></circle>
+      </svg>
+      <span id="progressText">0<span> / 10 tasks</span></span>
+    </div>
+  </header>
+
+  <section class="block" id="part1">
+    <div class="block-head">
+      <span class="block-kicker">Part 1</span>
+      <h2>Copy the given vectors p and q and show how to construct p + q</h2>
+      <p class="hint">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/></svg>
+        <span>Drag vectors <strong>p</strong> and <strong>q</strong> — in either order, anywhere on the grid — so the tail of one meets the tip of the other. Once the construction is correct, the app draws the resultant <strong>p + q</strong> and marks the task as solved.</span>
+      </p>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="swatch" style="background:var(--p-color)"></span> vector p</div>
+      <div class="legend-item"><span class="swatch" style="background:var(--q-color)"></span> vector q</div>
+      <div class="legend-item"><span class="swatch" style="background:var(--r-color)"></span> resultant p + q</div>
+    </div>
+
+    <div class="grid-panels" id="panelsHost"></div>
+  </section>
+
+  <section class="block" id="part2">
+    <div class="block-head">
+      <span class="block-kicker">Part 2</span>
+      <h2>Find a single vector which is equal to:</h2>
+      <p class="hint">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/></svg>
+        <span>Type the name of the single vector (e.g. <span class="vec-label">QS</span>) that the given chain of vectors around quadrilateral PQRS simplifies to.</span>
+      </p>
+    </div>
+
+    <div class="part2-layout">
+      <div class="quad-card">
+        <svg viewBox="0 0 8 8" style="width:100%;height:auto;">
+          <rect x="0" y="0" width="8" height="8" fill="url(#gridPattern)"/>
+          <polygon points="1,6 1,1 6,0.5 6.5,6.5" fill="var(--p-color-soft)" stroke="var(--ink)" stroke-width="0.05" opacity="0.9"/>
+          <g font-family="IBM Plex Mono, monospace" font-weight="600" font-size="0.55" fill="var(--ink)">
+            <text x="0.55" y="6.35">P</text>
+            <text x="0.55" y="0.75">Q</text>
+            <text x="6.15" y="0.35">R</text>
+            <text x="6.65" y="6.95">S</text>
+          </g>
+          <g fill="var(--ink)">
+            <circle cx="1" cy="6" r="0.08"/>
+            <circle cx="1" cy="1" r="0.08"/>
+            <circle cx="6" cy="0.5" r="0.08"/>
+            <circle cx="6.5" cy="6.5" r="0.08"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="questions">
+        <div class="qrow" data-answer="QS">
+          <span class="qrow-label">a</span>
+          <span class="qrow-expr"><span class="vec">QR</span><span class="op">+</span><span class="vec">RS</span></span>
+          <span class="eq">=</span>
+          <form class="answer-form" autocomplete="off">
+            <input type="text" maxlength="4" aria-label="Answer a" placeholder="e.g. QS">
+            <span class="feedback-icon"></span>
+          </form>
+        </div>
+        <div class="qrow" data-answer="PR">
+          <span class="qrow-label">b</span>
+          <span class="qrow-expr"><span class="vec">PQ</span><span class="op">+</span><span class="vec">QR</span></span>
+          <span class="eq">=</span>
+          <form class="answer-form" autocomplete="off">
+            <input type="text" maxlength="4" aria-label="Answer b" placeholder="e.g. QS">
+            <span class="feedback-icon"></span>
+          </form>
+        </div>
+        <div class="qrow" data-answer="PQ">
+          <span class="qrow-label">c</span>
+          <span class="qrow-expr"><span class="vec">PS</span><span class="op">+</span><span class="vec">SR</span><span class="op">+</span><span class="vec">RQ</span></span>
+          <span class="eq">=</span>
+          <form class="answer-form" autocomplete="off">
+            <input type="text" maxlength="4" aria-label="Answer c" placeholder="e.g. QS">
+            <span class="feedback-icon"></span>
+          </form>
+        </div>
+        <div class="qrow" data-answer="PS">
+          <span class="qrow-label">d</span>
+          <span class="qrow-expr"><span class="vec">PR</span><span class="op">+</span><span class="vec">RQ</span><span class="op">+</span><span class="vec">QS</span></span>
+          <span class="eq">=</span>
+          <form class="answer-form" autocomplete="off">
+            <input type="text" maxlength="4" aria-label="Answer d" placeholder="e.g. QS">
+            <span class="feedback-icon"></span>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page">
+    Construction rule: to build <code>p + q</code>, translate <code>p</code> and <code>q</code> so the tail of one sits exactly on the tip of the other — the resultant runs from the free tail to the free tip, in either order.
+  </footer>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="gridPattern" width="1" height="1" patternUnits="userSpaceOnUse">
+      <path d="M1 0 L0 0 0 1" fill="none" stroke="var(--grid-line)" stroke-width="0.035"/>
+    </pattern>
+    <marker id="arrow-p" markerWidth="0.62" markerHeight="0.62" refX="10" refY="5" viewBox="0 0 10 10" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,2.1 L10,5 L0,7.9 L2.3,5 Z" fill="var(--p-color)"/>
+    </marker>
+    <marker id="arrow-q" markerWidth="0.62" markerHeight="0.62" refX="10" refY="5" viewBox="0 0 10 10" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,2.1 L10,5 L0,7.9 L2.3,5 Z" fill="var(--q-color)"/>
+    </marker>
+    <marker id="arrow-r" markerWidth="0.62" markerHeight="0.62" refX="10" refY="5" viewBox="0 0 10 10" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,2.1 L10,5 L0,7.9 L2.3,5 Z" fill="var(--r-color)"/>
+    </marker>
+    <marker id="arrow-ghost" markerWidth="0.62" markerHeight="0.62" refX="10" refY="5" viewBox="0 0 10 10" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,2.1 L10,5 L0,7.9 L2.3,5 Z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+</svg>
+
+<script>
+(function(){
+  "use strict";
+
+  var PANELS = {
+    a: { vb:[0,0,9,6],      p:{x1:1,y1:5,x2:3,y2:1},     q:{x1:5,y1:1,x2:7.5,y2:5} },
+    b: { vb:[0,0,17,5.5],   p:{x1:2,y1:1.5,x2:6,y2:1.5}, q:{x1:1,y1:3.5,x2:10,y2:3.5} },
+    c: { vb:[-6,0,15,6],    p:{x1:7,y1:5,x2:1,y2:1},     q:{x1:8,y1:1,x2:2,y2:5} },
+    d: { vb:[0,0,10,6],     p:{x1:1,y1:3,x2:6,y2:1},     q:{x1:9,y1:3.2,x2:6.5,y2:4.5} },
+    e: { vb:[0,0,11.5,6.5], p:{x1:3,y1:5,x2:3,y2:0.5},   q:{x1:0,y1:3,x2:7,y2:3} },
+    f: { vb:[0,-4.5,12,11], p:{x1:6,y1:5.5,x2:1,y2:1},   q:{x1:6,y1:5.5,x2:11,y2:1} }
+  };
+
+  // fixed sizes in grid-unit terms, kept constant across panels regardless of viewBox extent
+  var STROKE_W = 0.16;
+  var LABEL_FONT = 0.62;
+  var LABEL_FONT_R = 0.55;
+  var LABEL_HALO = 0.22;
+  var LABEL_DIST = 0.62;
+  var TARGET_R = 0.28;
+  var TAIL_DOT_R = 0.11;
+
+  var LETTERS = ["a","b","c","d","e","f"];
+  var TOLERANCE = 0.6;
+  var STORAGE_KEY = "wektory17c-progress-v1";
+
+  function labelOffset(v, dist, t){
+    if (t === undefined) t = 0.5;
+    var dx = v.x2 - v.x1, dy = v.y2 - v.y1;
+    var len = Math.sqrt(dx*dx + dy*dy) || 1;
+    var nx = -dy/len, ny = dx/len;
+    // pick the side that tends to point "outward/up" on screen
+    if (ny > 0){ nx = -nx; ny = -ny; }
+    var bx = v.x1 + dx*t, by = v.y1 + dy*t;
+    return { x: bx + nx*dist, y: by + ny*dist };
+  }
+
+  function svgEl(tag, attrs){
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function buildPanel(letter, cfg){
+    var vb = cfg.vb;
+    var card = document.createElement("div");
+    card.className = "panel-card";
+    card.innerHTML =
+      '<div class="panel-top">' +
+        '<span class="panel-letter">' + letter + '</span>' +
+        '<span class="status-pill" data-role="status"><span class="dot"></span><span data-role="statustext">to do</span></span>' +
+      '</div>' +
+      '<div class="svg-holder"></div>' +
+      '<div class="panel-actions">' +
+        '<button type="button" data-role="reset">Reset</button>' +
+      '</div>';
+
+    var holder = card.querySelector(".svg-holder");
+    var svg = svgEl("svg", { viewBox: vb.join(" "), role:"img", "aria-label":"Vector diagram " + letter });
+    holder.appendChild(svg);
+
+    svg.appendChild(svgEl("rect", { x:vb[0], y:vb[1], width:vb[2], height:vb[3], fill:"url(#gridPattern)" }));
+
+    // axes emphasis for panel e
+    if (letter === "e"){
+      // nothing extra needed; q itself acts as the horizontal axis
+    }
+
+    var p = cfg.p, q = cfg.q;
+    var strokeW = STROKE_W;
+
+    // resultant vector (built now, appended last so it always renders on top)
+    var resultLine = svgEl("line", {
+      stroke:"var(--r-color)", "stroke-width":strokeW*1.05,
+      "stroke-dasharray": (strokeW*2.2)+","+(strokeW*1.6),
+      "marker-end":"url(#arrow-r)", opacity:0
+    });
+    var resultLabelBg = svgEl("text", {
+      class:"vec-label", stroke:"var(--surface-2)", "stroke-width": LABEL_HALO,
+      "stroke-linejoin":"round", fill:"var(--surface-2)",
+      "font-size": LABEL_FONT_R, opacity:0
+    });
+    resultLabelBg.textContent = "p + q";
+    var resultLabel = svgEl("text", {
+      class:"vec-label", fill:"var(--r-color)", "font-size": LABEL_FONT_R, opacity:0
+    });
+    resultLabel.textContent = "p + q";
+
+    // helper: build one draggable vector (line + arrowhead + tail dot + label + wide invisible hit-line)
+    function buildVector(v, colorVar, markerId, label){
+      var group = svgEl("g", { class:"drag-vec" });
+      var dx = v.x2 - v.x1, dy = v.y2 - v.y1;
+      var len = Math.sqrt(dx*dx + dy*dy) || 1;
+      var ux = dx/len, uy = dy/len;
+      var hit = svgEl("line", {
+        class:"drag-hit",
+        x1: v.x1 - ux*0.3, y1: v.y1 - uy*0.3,
+        x2: v.x2 + ux*0.35, y2: v.y2 + uy*0.35,
+        stroke:"transparent", "stroke-width": 1.05, "stroke-linecap":"round"
+      });
+      var line = svgEl("line", {
+        x1:v.x1, y1:v.y1, x2:v.x2, y2:v.y2,
+        stroke:colorVar, "stroke-width":strokeW, "stroke-linecap":"round",
+        "marker-end":"url(#"+markerId+")"
+      });
+      var tailDot = svgEl("circle", { cx:v.x1, cy:v.y1, r: TAIL_DOT_R, fill:colorVar });
+      var lab = labelOffset(v, LABEL_DIST, 0.28);
+      var text = svgEl("text", { x:lab.x, y:lab.y, class:"vec-label", fill:colorVar, "font-size": LABEL_FONT, "text-anchor":"middle" });
+      text.textContent = label;
+      group.appendChild(line);
+      group.appendChild(tailDot);
+      group.appendChild(text);
+      group.appendChild(hit);
+      svg.appendChild(group);
+      return { group:group, hit:hit };
+    }
+
+    var pBuilt = buildVector(p, "var(--p-color)", "arrow-p", "p");
+    var qBuilt = buildVector(q, "var(--q-color)", "arrow-q", "q");
+    var pGroup = pBuilt.group, pHit = pBuilt.hit;
+    var qGroup = qBuilt.group, qHit = qBuilt.hit;
+
+    // resultant renders above p and q so its label is never occluded by them
+    svg.appendChild(resultLine);
+    svg.appendChild(resultLabelBg);
+    svg.appendChild(resultLabel);
+
+    document.getElementById("panelsHost").appendChild(card);
+
+    // --- interactivity: both p and q are freely, independently draggable ---
+    var pOff = { tx:0, ty:0 };
+    var qOff = { tx:0, ty:0 };
+    var solved = false;
+
+    function currentP(){ return { x1:p.x1+pOff.tx, y1:p.y1+pOff.ty, x2:p.x2+pOff.tx, y2:p.y2+pOff.ty }; }
+    function currentQ(){ return { x1:q.x1+qOff.tx, y1:q.y1+qOff.ty, x2:q.x2+qOff.tx, y2:q.y2+qOff.ty }; }
+
+    function applyTransforms(){
+      pGroup.setAttribute("transform", "translate(" + pOff.tx + "," + pOff.ty + ")");
+      qGroup.setAttribute("transform", "translate(" + qOff.tx + "," + qOff.ty + ")");
+    }
+
+    function setStatus(v){
+      solved = v;
+      var pill = card.querySelector('[data-role="status"]');
+      var txt = card.querySelector('[data-role="statustext"]');
+      pill.classList.toggle("solved", v);
+      txt.textContent = v ? "solved" : "to do";
+    }
+
+    // checks both valid orders (p-then-q, or q-then-p) — vector addition is commutative,
+    // so either arrangement is a correct construction of p + q.
+    function updateCheck(){
+      var P = currentP(), Q = currentQ();
+      var distPQ = Math.hypot(Q.x1-P.x2, Q.y1-P.y2); // q's tail on p's tip
+      var distQP = Math.hypot(P.x1-Q.x2, P.y1-Q.y2); // p's tail on q's tip
+      var ok = false, tail, head;
+      if (distPQ <= distQP && distPQ < TOLERANCE){ ok = true; tail = {x:P.x1,y:P.y1}; head = {x:Q.x2,y:Q.y2}; }
+      else if (distQP < TOLERANCE){ ok = true; tail = {x:Q.x1,y:Q.y1}; head = {x:P.x2,y:P.y2}; }
+
+      if (ok){
+        resultLine.setAttribute("x1", tail.x); resultLine.setAttribute("y1", tail.y);
+        resultLine.setAttribute("x2", head.x); resultLine.setAttribute("y2", head.y);
+        var lab = labelOffset({x1:tail.x,y1:tail.y,x2:head.x,y2:head.y}, LABEL_DIST, 0.85);
+        resultLabel.setAttribute("x", lab.x); resultLabel.setAttribute("y", lab.y);
+        resultLabelBg.setAttribute("x", lab.x); resultLabelBg.setAttribute("y", lab.y);
+      }
+      resultLine.setAttribute("opacity", ok ? 1 : 0);
+      resultLabel.setAttribute("opacity", ok ? 1 : 0);
+      resultLabelBg.setAttribute("opacity", ok ? 1 : 0);
+
+      setStatus(ok);
+      saveProgress();
+      updateProgressUI();
+    }
+
+    function svgPointFromEvent(evt){
+      var pt = svg.createSVGPoint();
+      pt.x = evt.clientX; pt.y = evt.clientY;
+      var ctm = svg.getScreenCTM().inverse();
+      return pt.matrixTransform(ctm);
+    }
+
+    // generic free-drag wiring for one vector's group/hit-line/offset-state
+    function wireDrag(hitEl, groupEl, off){
+      var dragging = false;
+      var start = { px:0, py:0, tx:0, ty:0 };
+      hitEl.addEventListener("pointerdown", function(evt){
+        evt.preventDefault();
+        dragging = true;
+        groupEl.classList.add("dragging");
+        hitEl.setPointerCapture(evt.pointerId);
+        var pt = svgPointFromEvent(evt);
+        start.px = pt.x; start.py = pt.y;
+        start.tx = off.tx; start.ty = off.ty;
+      });
+      hitEl.addEventListener("pointermove", function(evt){
+        if (!dragging) return;
+        var pt = svgPointFromEvent(evt);
+        off.tx = start.tx + (pt.x - start.px);
+        off.ty = start.ty + (pt.y - start.py);
+        applyTransforms();
+      });
+      function end(evt){
+        if (!dragging) return;
+        dragging = false;
+        groupEl.classList.remove("dragging");
+        // free dragging: the vector stays exactly where it was dropped.
+        updateCheck();
+      }
+      hitEl.addEventListener("pointerup", end);
+      hitEl.addEventListener("pointercancel", end);
+    }
+
+    wireDrag(pHit, pGroup, pOff);
+    wireDrag(qHit, qGroup, qOff);
+
+    card.querySelector('[data-role="reset"]').addEventListener("click", function(){
+      pOff.tx = 0; pOff.ty = 0;
+      qOff.tx = 0; qOff.ty = 0;
+      applyTransforms();
+      updateCheck();
+    });
+
+    return {
+      letter: letter,
+      isSolved: function(){ return solved; },
+      getOffsets: function(){ return { p: {tx:pOff.tx, ty:pOff.ty}, q: {tx:qOff.tx, ty:qOff.ty} }; },
+      restoreOffsets: function(saved){
+        if (!saved) return;
+        if (saved.p){ pOff.tx = saved.p.tx||0; pOff.ty = saved.p.ty||0; }
+        if (saved.q){ qOff.tx = saved.q.tx||0; qOff.ty = saved.q.ty||0; }
+        applyTransforms();
+        updateCheck();
+      }
+    };
+  }
+
+  var panelInstances = {};
+  LETTERS.forEach(function(letter){
+    panelInstances[letter] = buildPanel(letter, PANELS[letter]);
+  });
+
+  // --- Part 2 ---
+  var qrows = Array.prototype.slice.call(document.querySelectorAll(".qrow"));
+  qrows.forEach(function(row){
+    var expected = row.getAttribute("data-answer");
+    var input = row.querySelector("input");
+    var icon = row.querySelector(".feedback-icon");
+    var form = row.querySelector("form");
+
+    function check(){
+      var raw = (input.value || "").trim().toUpperCase().replace(/[^A-Z]/g, "");
+      if (!raw) { input.classList.remove("correct","wrong"); icon.textContent = ""; return; }
+      if (raw === expected){
+        input.classList.add("correct");
+        input.classList.remove("wrong");
+        icon.textContent = "✓";
+        icon.style.color = "var(--success)";
+      } else {
+        input.classList.add("wrong");
+        input.classList.remove("correct");
+        icon.textContent = "✗";
+        icon.style.color = "var(--danger)";
+        setTimeout(function(){ input.classList.remove("wrong"); }, 350);
+      }
+      saveProgress();
+      updateProgressUI();
+    }
+
+    form.addEventListener("submit", function(e){ e.preventDefault(); check(); });
+    input.addEventListener("blur", check);
+    input.addEventListener("input", function(){
+      input.classList.remove("wrong");
+      if (input.value.trim().toUpperCase().replace(/[^A-Z]/g,"") === expected){
+        check();
+      }
+    });
+  });
+
+  // --- progress ---
+  var RING_CIRC = 100.53;
+  function updateProgressUI(){
+    var solvedCount = LETTERS.filter(function(l){ return panelInstances[l].isSolved(); }).length;
+    var correctCount = qrows.filter(function(r){
+      return r.querySelector("input").classList.contains("correct");
+    }).length;
+    var total = solvedCount + correctCount;
+    document.getElementById("progressText").innerHTML = total + "<span> / 10 tasks</span>";
+    var offset = RING_CIRC * (1 - total/10);
+    document.getElementById("progressFill").setAttribute("stroke-dashoffset", offset);
+  }
+
+  function saveProgress(){
+    try {
+      var data = { panels:{}, answers:{} };
+      LETTERS.forEach(function(l){ data.panels[l] = panelInstances[l].getOffsets(); });
+      qrows.forEach(function(r, i){
+        var inp = r.querySelector("input");
+        data.answers[i] = { value:inp.value, correct:inp.classList.contains("correct") };
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch(e){ /* storage unavailable — ignore */ }
+  }
+
+  function restoreProgress(){
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (data.panels){
+        LETTERS.forEach(function(l){
+          panelInstances[l].restoreOffsets(data.panels[l]);
+        });
+      }
+      if (data.answers){
+        qrows.forEach(function(r, i){
+          var saved = data.answers[i];
+          if (saved && saved.value){
+            var inp = r.querySelector("input");
+            inp.value = saved.value;
+            if (saved.correct){
+              inp.classList.add("correct");
+              r.querySelector(".feedback-icon").textContent = "✓";
+              r.querySelector(".feedback-icon").style.color = "var(--success)";
+            }
+          }
+        });
+      }
+    } catch(e){ /* ignore */ }
+  }
+
+  restoreProgress();
+  updateProgressUI();
+})();
+</script>
+</body>
+</html>
